@@ -5,5 +5,6 @@ Feature: User Can Update Name Of Template
 # //Create card 
 
 Scenario: User Can Update Name Of Template
-
-        When User Can Update Name Of Template 
+        Given The user navigate the board
+        When User Can Update Name Of Template
+        Then The Card template name created successfully

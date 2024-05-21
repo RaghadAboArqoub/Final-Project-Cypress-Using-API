@@ -1,13 +1,16 @@
 /// <reference types="cypress" />
 import { Given, Then, When  } from "cypress-cucumber-preprocessor/steps";
 import sharedDataUtils from "../../../pageObjects/shared/dataUtils.cy";
+import updateNameOfTemplatesActions from "../../../pageObjects/updateNameOfTemplates/actions.cy";
+import updateNameOfTemplatesAssertions from "../../../pageObjects/updateNameOfTemplates/assertions.cy";
 const dataUtils = new sharedDataUtils();
 const title = "Template Card";
 const boardName = "Test Board";
 let boardUrl , boardId ,listId,cardId; 
 const listName ="My List";
 const updatedCardName="Updated card name"
-
+const updateNameOfTemplatesAction =new updateNameOfTemplatesActions()
+const updateNameOfTemplatesAssertion = new updateNameOfTemplatesAssertions()
 before(()=>{
     dataUtils.createBoard(boardName).then((resp)=>{
         boardUrl = resp.body.url ; 
@@ -27,13 +30,17 @@ before(()=>{
     cy.loginToTrello();
 
 });
-
+Given("The user navigate the board",()=>{
+    updateNameOfTemplatesAction.openBoard(boardUrl)
+});
 When("User Can Update Name Of Template",()=>{
-dataUtils.updateNameOfTemplateCard(updatedCardName,cardId).then(response=>{
-    expect(response.status).to.eq(200);
-    expect(response.body.name).to.eq(updatedCardName);
-}   )
+updateNameOfTemplatesAction.NavigateCard()
+updateNameOfTemplatesAction.editCardName(updatedCardName)
 
+});
+Then("The Card template name created successfully",()=>{
+updateNameOfTemplatesAssertion.checkCardTempateNameUpated(updatedCardName)
+cy.wait(3000)
 });
 
 

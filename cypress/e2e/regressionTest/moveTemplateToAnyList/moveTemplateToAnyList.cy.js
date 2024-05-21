@@ -1,12 +1,16 @@
 /// <reference types="cypress" />
 import { Given, Then, When  } from "cypress-cucumber-preprocessor/steps";
 import sharedDataUtils from "../../../pageObjects/shared/dataUtils.cy";
+import moveCardTemplatesActions from "../../../pageObjects/MoveTemplateCard/Actions.cy";
+import moveCardTemplatesAssertions from "../../../pageObjects/MoveTemplateCard/assertions.cy";
 const dataUtils = new sharedDataUtils();
 const title = "Template Card";
 const boardName = "Test Board";
 let boardUrl , boardId ,listId1,cardId,listId2; 
 const listName1 ="My List1";
 const listName2 ="My List2";
+const moveCardTemplatesAction = new moveCardTemplatesActions()
+const moveCardTemplatesAssertion = new moveCardTemplatesAssertions()
 before(()=>{
     dataUtils.createBoard(boardName).then((resp)=>{
         boardUrl = resp.body.url ; 
@@ -27,15 +31,21 @@ before(()=>{
     cy.loginToTrello();
 });
 
-When("User Can Move Template To Any List",()=>{
-    dataUtils.hideTemplateCard(cardId).then((resp2)=>{
-        expect(resp2.status).to.eq(200);
-    })
+Given("The user navigate the board",()=>{
+   moveCardTemplatesAction.openBoard(boardUrl)
    
 });
-
-
-after(()=>{
-    cy.wait(3000)
-    dataUtils.deleteBoard(boardId)
-})
+When("The user Navigate the card",()=>{
+   moveCardTemplatesAction.NavigateCard()
+   
+});
+When("User Can Move Template To New List",()=>{
+   moveCardTemplatesAction.moveCardtoAnotherList()
+});
+Then("The card moved successfully",()=>{
+  moveCardTemplatesAssertion.checkThatTemplateIsNotExistInPrevList()
+});
+// after(()=>{
+//     cy.wait(3000)
+//     dataUtils.deleteBoard(boardId)
+// })

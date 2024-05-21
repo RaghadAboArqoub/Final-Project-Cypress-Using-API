@@ -4,5 +4,7 @@ Feature: User Can Delete Existing Card
 # //Create List
 # //Create card 
 
-Scenario: Existing Card 
-        When Navigate  and delete the card 
+Scenario: Delete Existing Card 
+        Given The user navigate the board
+        When  The user navigate the card and delete it 
+        Then  The card deleted sucessfully  

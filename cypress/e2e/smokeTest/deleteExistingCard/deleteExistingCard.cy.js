@@ -1,12 +1,16 @@
 /// <reference types="cypress" />
 import { Given, Then, When  } from "cypress-cucumber-preprocessor/steps";
 import sharedDataUtils from "../../../pageObjects/shared/dataUtils.cy";
+import DeleteCardActions from "../../../pageObjects/deleteExistingCard/actions.cy";
+import deleteCardtAssertions from "../../../pageObjects/deleteExistingCard/assertions.cy";
 const dataUtils = new sharedDataUtils();
 
 const title = "My Card";
 const boardName = "Test Board";
 let boardUrl , boardId ,listId ,cardId; 
 const listName ="My List";
+const deleteCardAction = new DeleteCardActions();
+const deleteCardAssertions = new deleteCardtAssertions()
 
 before(()=>{
     dataUtils.createBoard(boardName).then((resp)=>{
@@ -21,26 +25,23 @@ before(()=>{
             })
 
         })
-       
 
-    })
-    
     cy.loginToTrello();
-
+})
+})
+Given("The user navigate the board",()=>{
+    deleteCardAction.openBoard(boardUrl)
 });
 
-When("Navigate  and delete the card",()=>{
-    cy.visit(boardUrl)
+When("The user navigate the card and delete it",()=>{
+    deleteCardAction.deleteCard()
     cy.wait(1000)
     cy.screenshot()
-
-    dataUtils.DeleteCard(cardId).then((response)=>{
-        expect(response.status).to.eq(200);
-        
-
-    })
 });
 
+Then("The card deleted sucessfully",()=>{
+    deleteCardAssertions.checkCardNameIsNotVisible()
+})
 
 after(()=>{
     cy.wait(3000)

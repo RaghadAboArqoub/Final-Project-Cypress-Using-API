@@ -5,6 +5,7 @@ module.exports = defineConfig({
     specPattern: "**/*.feature",
     baseUrl:"https://trello.com/",
     chromeWebSecurity:false,
+    
     setupNodeEvents(on, config) {
       on("file:preprocessor", cucumber());
       

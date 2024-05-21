@@ -5,5 +5,7 @@ Feature: User Can Move Template To Any List
 # //Create card 
 
 Scenario: User Can Move Template To Any List
-
-        When User Can Move Template To Any List 
+  Given The user navigate the board
+  When The user Navigate the card 
+  And User Can Move Template To New List 
+  Then The card moved successfully 

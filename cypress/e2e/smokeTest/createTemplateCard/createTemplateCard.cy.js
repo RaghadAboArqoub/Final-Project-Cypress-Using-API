@@ -1,10 +1,14 @@
 /// <reference types="cypress" />
 import { Given, Then, When  } from "cypress-cucumber-preprocessor/steps";
 import sharedDataUtils from "../../../pageObjects/shared/dataUtils.cy";
+import createTemplateCardActions from "../../../pageObjects/CreateTemplateCard/actions.cy";
+import createTemplateCardAssertions from "../../../pageObjects/CreateTemplateCard/assertions.cy";
 const dataUtils = new sharedDataUtils();
+const createTemplateCardAction = new createTemplateCardActions()
+const createTemplateCardAssertion =new createTemplateCardAssertions()
 const title = "Template Card";
 const boardName = "Test Board";
-let boardUrl , boardId ,listId; 
+let boardUrl , boardId ,listId,cardId; 
 const listName ="My List";
 
 before(()=>{
@@ -13,16 +17,28 @@ before(()=>{
         boardId = resp.body.id ; 
         return dataUtils.createList(boardId,listName).then((resp2)=>{
             listId = resp2.body.id ;
+            dataUtils.createCard(listId,title).then((resp3)=>{
+                cardId=resp3.body.id;
+            })
+
         })
     })
     cy.loginToTrello();
 });
 
-When("User Can Create New Template Card Template",()=>{
-  dataUtils.createTemplateCard(title,listId).then((response)=>{
-    expect(response.status).to.eq(200);
+Given("The user navigate the board",()=>{
+    createTemplateCardAction.openBoard(boardUrl)
+});
+When("Navigate the Card and open it",()=>{
+createTemplateCardAction.navigateCard()
 
-})
+});
+When("The user Make the card as template card",()=>{
+    createTemplateCardAction.makeCardTemplate()
+});
+  Then("The card should be template card",()=>{
+    cy.wait(1000)
+    createTemplateCardAssertion.checkThisCardIsTemplateIsVisible()
 });
 
 after(()=>{
